@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 // const bodyParser = require('body-parser');
+const helmet = require('helmet');
+
 const userRoute = require('./routes/users');
 const cardRoute = require('./routes/cards');
 
@@ -24,9 +26,17 @@ app.use((req, res, next) => {
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
 
+// хелмет от уязвимостей
+app.use(helmet());
+
 // подключение роутов
 app.use('/users', userRoute);
 app.use('/cards', cardRoute);
+
+// если неверный маршрут
+app.use('*', (req, res) => {
+  res.status(404).json({ message: 'Такая страница не найдена' });
+});
 
 // слушаем порт
 app.listen(PORT, () => {
