@@ -35,7 +35,6 @@ module.exports.getUserById = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .orFail()
     .then((user) => res.status(201).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
