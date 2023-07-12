@@ -38,6 +38,11 @@ module.exports.deleteCardById = (req, res) => {
           .status(404)
           .send({ message: 'Такой карточки не существует' });
       }
+      if (err.name === 'CastError') {
+        return res
+          .status(400)
+          .send({ message: 'Переданы некорректные данные' });
+      }
       return res
         .status(500)
         .send({ message: 'Ошибка на стороне сервера', err });
