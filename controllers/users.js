@@ -49,7 +49,11 @@ module.exports.createUser = (req, res) => {
 // изменение профиля пользователя
 module.exports.updateUserProfile = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, about },
+    { new: true, runValidators: true }
+  )
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
@@ -70,7 +74,11 @@ module.exports.updateUserProfile = (req, res) => {
 // изменение аватара пользователя
 module.exports.updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
+    { new: true, runValidators: true }
+  )
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
