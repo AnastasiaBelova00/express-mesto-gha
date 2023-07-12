@@ -37,10 +37,8 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.status(201).send(user))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные пользователя' });
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Переданы невалидные данные' });
       }
       return res
         .status(500)
@@ -55,10 +53,8 @@ module.exports.updateUserProfile = (req, res) => {
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные пользователя' });
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Переданы невалидные данные' });
       }
       if (err.name === 'DocumentNotFoundError') {
         return res
@@ -78,10 +74,8 @@ module.exports.updateUserAvatar = (req, res) => {
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные пользователя' });
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Переданы невалидные данные' });
       }
       if (err.name === 'DocumentNotFoundError') {
         return res
