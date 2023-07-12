@@ -14,7 +14,7 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'CastError') {
         return res
@@ -31,7 +31,7 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail()
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         return res
@@ -52,7 +52,7 @@ module.exports.likeCard = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         return res
@@ -78,7 +78,7 @@ module.exports.dislikeCard = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         return res
