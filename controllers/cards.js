@@ -7,15 +7,15 @@ module.exports.getAllCards = (req, res) => {
 };
 
 module.exports.createCard = (req, res) => {
-  // const userId = req.user._id;
   const { name, link } = req.body;
-  Card.create({ name, link })
+  const owner = req.user._id;
+  Card.create({ name, link, owner })
     .then((card) => res.send({ card }))
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.deleteCardById = (req, res) => {
-  Card.findByIdAndRemoved(req.params.cardId)
+  Card.findByIdAndRemove(req.params.cardId)
     .then((card) => res.send(card))
     .catch((err) => res.status(500).send({ message: err.message }));
 };
