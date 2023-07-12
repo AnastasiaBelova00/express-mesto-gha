@@ -4,9 +4,7 @@ const User = require('../models/user');
 module.exports.getAllUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send(users))
-    .catch((err) =>
-      res.status(500).send({ message: 'Ошибка на стороне сервера', err })
-    );
+    .catch((err) => res.status(500).send({ message: 'Ошибка на стороне сервера', err }));
 };
 
 // поиск конкретного пользователя
