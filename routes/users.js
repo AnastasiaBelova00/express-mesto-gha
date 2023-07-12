@@ -8,10 +8,10 @@ const {
   updateUserAvatar,
 } = require('../controllers/users');
 
-router.get('/', getAllUsers);
-router.get('/:userId', getUserById);
-router.post('/', createUser);
-router.patch('/me', updateUserProfile);
-router.patch('/me/avatar', updateUserAvatar);
+router.get('/', getAllUsers); // все пользователи
+router.get('/:userId', getUserById); // поиск конткретного пользователя
+router.post('/', createUser); // создание пользователя
+router.patch('/me', updateUserProfile); // изменение профиля
+router.patch('/me/avatar', updateUserAvatar); // изменение аватара
 
 module.exports = router;

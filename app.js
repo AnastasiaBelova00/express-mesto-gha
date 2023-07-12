@@ -9,6 +9,7 @@ const { PORT = 3000 } = process.env;
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
+// конкретный пользователь и его id
 app.use((req, res, next) => {
   req.user = {
     _id: '64ada1f4bff80fd09cd25a28',
@@ -17,12 +18,15 @@ app.use((req, res, next) => {
   next();
 });
 
+// парсер для обработки
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// подключение роутов
 app.use('/users', userRoute);
 app.use('/cards', cardRoute);
 
+// слушаем порт
 app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+  console.log(`Приложение запущено на порте ${PORT}`);
 });

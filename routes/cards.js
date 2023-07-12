@@ -3,14 +3,14 @@ const {
   getAllCards,
   createCard,
   deleteCardById,
-  // likeCard,
-  // dislikeCard,
+  likeCard,
+  dislikeCard,
 } = require('../controllers/cards');
 
-router.get('/', getAllCards);
-router.post('/', createCard);
-router.delete('/:cardId', deleteCardById);
-// router.put('/:cardId/likes', likeCard);
-// router.delete('/:cardId/likes', dislikeCard);
+router.get('/', getAllCards); // все карточки
+router.post('/', createCard); // создание карточки
+router.delete('/:cardId', deleteCardById); // удаление карточки
+router.put('/:cardId/likes', likeCard); // ставим лайк
+router.delete('/:cardId/likes', dislikeCard); // убираем лайк
 
 module.exports = router;
