@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 // const bodyParser = require('body-parser');
 const helmet = require('helmet');
+const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 const userRoute = require('./routes/users');
 const cardRoute = require('./routes/cards');
@@ -22,16 +24,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// // парсер для обработки
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
-
 // хелмет от уязвимостей
 app.use(helmet());
 
 // подключение роутов
-app.use('/users', userRoute);
-app.use('/cards', cardRoute);
+app.post('/signin', login, (req, res) => {
+  res.status(401).json({ message: 'Необходимо зарегистрироваться' });
+});
+app.post('/signup', createUser);
+
+app.use('/users', auth, userRoute);
+app.use('/cards', auth, cardRoute);
 
 // если неверный маршрут
 app.use('*', (req, res) => {
