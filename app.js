@@ -15,14 +15,14 @@ app.use(express.json());
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
-// конкретный пользователь и его id
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64ada1f4bff80fd09cd25a28',
-  };
+// // конкретный пользователь и его id
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '64ada1f4bff80fd09cd25a28',
+//   };
 
-  next();
-});
+//   next();
+// });
 
 // хелмет от уязвимостей
 app.use(helmet());
