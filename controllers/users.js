@@ -47,7 +47,15 @@ module.exports.createUser = (req, res) => {
         password: hash,
       })
     )
-    .then((user) => res.status(201).send({ user }))
+    .then((user) =>
+      res.status(201).send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.about,
+        email: user.email,
+      })
+    )
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Переданы невалидные данные' });
@@ -70,7 +78,7 @@ module.exports.login = (req, res) => {
       });
 
       // вернём токен
-      res.status(200).send({ token });
+      res.status(200).send({ _id: token });
     })
     .catch(() => {
       res.status(401).send({ message: 'Неверный логин или пароль' });
