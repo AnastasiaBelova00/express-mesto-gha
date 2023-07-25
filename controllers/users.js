@@ -66,25 +66,6 @@ module.exports.createUser = (req, res) => {
     });
 };
 
-// логин и проверка
-module.exports.login = (req, res) => {
-  const { email, password } = req.body;
-
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      // создадим токен
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', {
-        expiresIn: '7d',
-      });
-
-      // вернём токен
-      res.status(200).send({ _id: token });
-    })
-    .catch(() => {
-      res.status(401).send({ message: 'Неверный логин или пароль' });
-    });
-};
-
 // изменение профиля пользователя
 module.exports.updateUserProfile = (req, res) => {
   const { name, about } = req.body;
@@ -135,9 +116,28 @@ module.exports.updateUserAvatar = (req, res) => {
     });
 };
 
+// логин и проверка
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // создадим токен
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', {
+        expiresIn: '7d',
+      });
+
+      // вернём токен
+      res.status(200).send({ _id: token });
+    })
+    .catch(() => {
+      res.status(401).send({ message: 'Неверный логин или пароль' });
+    });
+};
+
 // поиск текущего пользователя
 module.exports.getCurrentUser = (req, res) => {
-  User.find(req.user._id)
+  User.findById(req.user._id)
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
