@@ -60,6 +60,11 @@ module.exports.createUser = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Переданы невалидные данные' });
       }
+      if (err.code === 11000) {
+        return res
+          .status(409)
+          .send({ message: 'Пользователь с таким email уже есть в базе' });
+      }
       return res
         .status(500)
         .send({ message: 'Ошибка на стороне сервера', err });
