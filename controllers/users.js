@@ -3,14 +3,14 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 // список всех пользователей
-module.exports.getAllUsers = (req, res) => {
+module.exports.getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send(users))
-    .catch((err) => res.status(500).send({ message: 'Ошибка на стороне сервера', err }));
+    .catch(next);
 };
 
 // поиск конкретного пользователя
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail()
     .then((user) => res.status(200).send(user))
@@ -25,33 +25,33 @@ module.exports.getUserById = (req, res) => {
           .status(400)
           .send({ message: 'Переданы некорректные данные пользователя' });
       }
-      return res
-        .status(500)
-        .send({ message: 'Ошибка на стороне сервера', err });
+      return next(err);
     });
 };
 
 // создание пользователя
-module.exports.createUser = (req, res) => {
-  const {
-    name, about, avatar, email, password
-  } = req.body;
+module.exports.createUser = (req, res, next) => {
+  const { name, about, avatar, email, password } = req.body;
   bcrypt
     .hash(password, 10)
-    .then((hash) => User.create({
-      name,
-      about,
-      avatar,
-      email,
-      password: hash,
-    }))
-    .then((user) => res.status(201).send({
-      _id: user._id,
-      name: user.name,
-      about: user.about,
-      avatar: user.about,
-      email: user.email,
-    }))
+    .then((hash) =>
+      User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      })
+    )
+    .then((user) =>
+      res.status(201).send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.about,
+        email: user.email,
+      })
+    )
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Переданы невалидные данные' });
@@ -61,14 +61,12 @@ module.exports.createUser = (req, res) => {
           .status(409)
           .send({ message: 'Пользователь с таким email уже есть в базе' });
       }
-      return res
-        .status(500)
-        .send({ message: 'Ошибка на стороне сервера', err });
+      return next(err);
     });
 };
 
 // изменение профиля пользователя
-module.exports.updateUserProfile = (req, res) => {
+module.exports.updateUserProfile = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -86,14 +84,12 @@ module.exports.updateUserProfile = (req, res) => {
           .status(404)
           .send({ message: 'Такого пользователя не существует' });
       }
-      return res
-        .status(500)
-        .send({ message: 'Ошибка на стороне сервера', err });
+      return next(err);
     });
 };
 
 // изменение аватара пользователя
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -111,9 +107,7 @@ module.exports.updateUserAvatar = (req, res) => {
           .status(404)
           .send({ message: 'Такого пользователя не существует' });
       }
-      return res
-        .status(500)
-        .send({ message: 'Ошибка на стороне сервера', err });
+      return next(err);
     });
 };
 
@@ -137,7 +131,7 @@ module.exports.login = (req, res) => {
 };
 
 // поиск текущего пользователя
-module.exports.getCurrentUser = (req, res) => {
+module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail()
     .then((user) => res.status(200).send(user))
@@ -152,8 +146,6 @@ module.exports.getCurrentUser = (req, res) => {
           .status(400)
           .send({ message: 'Переданы некорректные данные пользователя' });
       }
-      return res
-        .status(500)
-        .send({ message: 'Ошибка на стороне сервера', err });
+      return next(err);
     });
 };

@@ -6,6 +6,7 @@ const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const centralError = require('./middlewares/error');
 
 const regExp = require('./utils/constants');
 
@@ -56,8 +57,9 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Такая страница не найдена' });
 });
 
-// обработчики ошибок celebrate
+// обработчики ошибок celebrate и миддлвары
 app.use(errors());
+app.use(centralError);
 
 // слушаем порт
 app.listen(PORT, () => {
