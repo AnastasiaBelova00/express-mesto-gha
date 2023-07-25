@@ -1,14 +1,14 @@
 const Card = require('../models/card');
 
 // получение всех карточек
-module.exports.getAllCards = (req, res) => {
+module.exports.getAllCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.status(200).send(cards))
-    .catch((err) => res.status(500).send({ message: 'Ошибка на стороне сервера', err }));
+    .catch(next);
 };
 
 // создание карточки
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
@@ -17,14 +17,12 @@ module.exports.createCard = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Переданы невалидные данные' });
       }
-      return res
-        .status(500)
-        .send({ message: 'Ошибка на стороне сервера', err });
+      return next(err);
     });
 };
 
 // удаление карточки
-module.exports.deleteCardById = (req, res) => {
+module.exports.deleteCardById = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail()
     .then((card) => res.status(200).send(card))
@@ -39,14 +37,12 @@ module.exports.deleteCardById = (req, res) => {
           .status(400)
           .send({ message: 'Переданы некорректные данные' });
       }
-      return res
-        .status(500)
-        .send({ message: 'Ошибка на стороне сервера', err });
+      return next(err);
     });
 };
 
 // лайк
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -65,14 +61,12 @@ module.exports.likeCard = (req, res) => {
           .status(400)
           .send({ message: 'Переданы некорректные данные' });
       }
-      return res
-        .status(500)
-        .send({ message: 'Ошибка на стороне сервера', err });
+      return next(err);
     });
 };
 
 // снятие лайка
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -91,8 +85,6 @@ module.exports.dislikeCard = (req, res) => {
           .status(400)
           .send({ message: 'Переданы некорректные данные' });
       }
-      return res
-        .status(500)
-        .send({ message: 'Ошибка на стороне сервера', err });
+      return next(err);
     });
 };
