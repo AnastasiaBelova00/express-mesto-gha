@@ -6,8 +6,7 @@ const { celebrate, Joi } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 
-const regExp =
-  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+const regExp = require('./utils/constants');
 
 const userRoute = require('./routes/users');
 const cardRoute = require('./routes/cards');
