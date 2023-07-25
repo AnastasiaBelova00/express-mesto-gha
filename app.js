@@ -57,7 +57,7 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Такая страница не найдена' });
 });
 
-// обработчики ошибок celebrate и миддлвары
+// обработчики ошибок celebrate и миддлвара
 app.use(errors());
 app.use(centralError);
 
