@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 // const bodyParser = require('body-parser');
 const helmet = require('helmet');
+const { celebrate, Joi } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 
@@ -28,10 +29,29 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 app.use(helmet());
 
 // подключение роутов
-app.post('/signin', login, (req, res) => {
-  res.status(401).json({ message: 'Необходимо зарегистрироваться' });
-});
-app.post('/signup', createUser);
+app.post(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(8),
+    }),
+  }),
+  login
+);
+
+app.post(
+  '/signup',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(30),
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(8),
+    }),
+  }),
+  createUser
+);
 
 app.use('/users', auth, userRoute);
 app.use('/cards', auth, cardRoute);
