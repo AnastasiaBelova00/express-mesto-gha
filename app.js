@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 // const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 
@@ -17,15 +18,6 @@ const app = express();
 app.use(express.json());
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
-
-// // конкретный пользователь и его id
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '64ada1f4bff80fd09cd25a28',
-//   };
-
-//   next();
-// });
 
 // хелмет от уязвимостей
 app.use(helmet());
@@ -63,6 +55,9 @@ app.use('/cards', auth, cardRoute);
 app.use('*', (req, res) => {
   res.status(404).json({ message: 'Такая страница не найдена' });
 });
+
+// обработчики ошибок celebrate
+app.use(errors());
 
 // слушаем порт
 app.listen(PORT, () => {
