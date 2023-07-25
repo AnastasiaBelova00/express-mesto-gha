@@ -137,7 +137,7 @@ module.exports.updateUserAvatar = (req, res) => {
 
 // поиск текущего пользователя
 module.exports.getCurrentUser = (req, res) => {
-  User.findById(req.params._id)
+  User.find(req.user._id)
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {

@@ -12,6 +12,6 @@ router.get('/', getAllUsers); // все пользователи
 router.get('/:userId', getUserById); // поиск конткретного пользователя
 router.patch('/me', updateUserProfile); // изменение профиля
 router.patch('/me/avatar', updateUserAvatar); // изменение аватара
-router.get('/me', getCurrentUser); // изменение профиля
+router.get('/me', getCurrentUser); // текущий авторизованный пользователь
 
 module.exports = router;
