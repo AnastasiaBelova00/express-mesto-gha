@@ -1,7 +1,10 @@
 const router = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
 
-const regExp = require('../utils/constants');
+const {
+  userIdValidation,
+  userInfoValidation,
+  userAvatarValidation,
+} = require('../middlewares/validation');
 
 const {
   getAllUsers,
@@ -15,27 +18,10 @@ router.get('/', getAllUsers); // все пользователи
 
 router.get('/me', getCurrentUser); // текущий авторизованный пользователь
 
-router.get('/:userId', getUserById); // поиск конткретного пользователя
+router.get('/:userId', userIdValidation, getUserById); // поиск конткретного пользователя
 
-router.patch(
-  '/me',
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().required().min(2).max(30),
-      about: Joi.string().required().min(2).max(30),
-    }),
-  }),
-  updateUserProfile
-); // изменение профиля
+router.patch('/me', userInfoValidation, updateUserProfile); // изменение профиля
 
-router.patch(
-  '/me/avatar',
-  celebrate({
-    body: Joi.object().keys({
-      avatar: Joi.string().required().regex(regExp),
-    }),
-  }),
-  updateUserAvatar
-); // изменение аватара
+router.patch('/me/avatar', userAvatarValidation, updateUserAvatar); // изменение аватара
 
 module.exports = router;

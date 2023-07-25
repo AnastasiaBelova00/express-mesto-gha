@@ -1,14 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
-// const bodyParser = require('body-parser');
 const helmet = require('helmet');
-const { celebrate, Joi } = require('celebrate');
+
 const { errors } = require('celebrate');
+const {
+  userCreateValidation,
+  userLoginValidation,
+} = require('./middlewares/validation');
+
 const { login, createUser } = require('./controllers/users');
+
 const auth = require('./middlewares/auth');
 const centralError = require('./middlewares/error');
-
-const regExp = require('./utils/constants');
 
 const userRoute = require('./routes/users');
 const cardRoute = require('./routes/cards');
@@ -24,30 +27,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 app.use(helmet());
 
 // подключение роутов
-app.post(
-  '/signin',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required().min(8),
-    }),
-  }),
-  login
-);
+app.post('/signin', userLoginValidation, login);
 
-app.post(
-  '/signup',
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().min(2).max(30),
-      about: Joi.string().min(2).max(30),
-      avatar: Joi.string().regex(regExp),
-      email: Joi.string().required().email(),
-      password: Joi.string().required().min(8),
-    }),
-  }),
-  createUser
-);
+app.post('/signup', userCreateValidation, createUser);
 
 app.use('/users', auth, userRoute);
 app.use('/cards', auth, cardRoute);
