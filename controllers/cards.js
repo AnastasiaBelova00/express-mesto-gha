@@ -2,7 +2,7 @@ const Card = require('../models/card');
 
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
-// const ForbiddenError = require('../errors/ForbiddenError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 // получение всех карточек
 module.exports.getAllCards = (req, res, next) => {
@@ -29,6 +29,12 @@ module.exports.createCard = (req, res, next) => {
 module.exports.deleteCardById = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail()
+    .then((card) => {
+      if (card.owner !== req.user._id) {
+        throw new ForbiddenError('Нельзя удалить чужую карточку');
+      }
+      return Card.findByIdAndRemove(req.params.cardId);
+    })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
