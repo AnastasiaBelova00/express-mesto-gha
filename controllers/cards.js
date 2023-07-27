@@ -27,19 +27,19 @@ module.exports.createCard = (req, res, next) => {
 
 // удаление карточки
 module.exports.deleteCardById = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .orFail()
     .then((card) => {
-      if (card.owner !== req.user._id) {
+      if (!card) {
+        return next(new NotFoundError('Такой карточки не существует'));
+      }
+      if (String(card.owner) !== String(req.user._id)) {
         return next(new ForbiddenError('Нельзя удалить чужую карточку'));
       }
-      return Card.deleteOne(card);
+      return Card.findByIdAndRemove(req.params.cardId);
     })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
-      if (err.name === 'DocumentNotFound') {
-        return next(new NotFoundError('Такой карточки не существует'));
-      }
       if (err.name === 'CastError') {
         return next(new BadRequestError('Переданы некорректные данные'));
       }
