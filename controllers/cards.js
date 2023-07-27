@@ -30,19 +30,20 @@ module.exports.deleteCardById = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
-        return next(new NotFoundError('Такой карточки не существует'));
+        throw new NotFoundError('Такой карточки не существует');
       }
       if (String(card.owner) !== String(req.user._id)) {
-        return next(new ForbiddenError('Нельзя удалить чужую карточку'));
+        throw new ForbiddenError('Нельзя удалить чужую карточку');
       }
       return Card.findByIdAndRemove(req.params.cardId);
     })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new BadRequestError('Переданы некорректные данные'));
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else {
+        next(err);
       }
-      return next(err);
     });
 };
 
