@@ -1,5 +1,9 @@
 const Card = require('../models/card');
 
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+// const ForbiddenError = require('../errors/ForbiddenError');
+
 // получение всех карточек
 module.exports.getAllCards = (req, res, next) => {
   Card.find({})
@@ -15,7 +19,7 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы невалидные данные' });
+        return next(new BadRequestError('Переданы невалидные данные'));
       }
       return next(err);
     });
@@ -28,14 +32,10 @@ module.exports.deleteCardById = (req, res, next) => {
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(404)
-          .send({ message: 'Такой карточки не существует' });
+        return next(new NotFoundError('Такой карточки не существует'));
       }
       if (err.name === 'CastError') {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные' });
+        return next(new BadRequestError('Переданы некорректные данные'));
       }
       return next(err);
     });
@@ -52,14 +52,10 @@ module.exports.likeCard = (req, res, next) => {
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(404)
-          .send({ message: 'Такой карточки не существует' });
+        return next(new NotFoundError('Такой карточки не существует'));
       }
       if (err.name === 'CastError') {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные' });
+        return next(new BadRequestError('Переданы некорректные данные'));
       }
       return next(err);
     });
@@ -76,14 +72,10 @@ module.exports.dislikeCard = (req, res, next) => {
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(404)
-          .send({ message: 'Такой карточки не существует' });
+        return next(new NotFoundError('Такой карточки не существует'));
       }
       if (err.name === 'CastError') {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные' });
+        return next(new BadRequestError('Переданы некорректные данные'));
       }
       return next(err);
     });

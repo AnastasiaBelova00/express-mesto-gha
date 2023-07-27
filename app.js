@@ -11,10 +11,12 @@ const {
 const { login, createUser } = require('./controllers/users');
 
 const auth = require('./middlewares/auth');
-const centralError = require('./middlewares/error');
+const centralError = require('./middlewares/centralError');
 
 const userRoute = require('./routes/users');
 const cardRoute = require('./routes/cards');
+
+const NotFoundError = require('./errors/NotFoundError');
 
 const { PORT = 3000 } = process.env;
 
@@ -35,8 +37,8 @@ app.use('/users', auth, userRoute);
 app.use('/cards', auth, cardRoute);
 
 // если неверный маршрут
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Такая страница не найдена' });
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('Такая страница не найдена'));
 });
 
 // обработчики ошибок celebrate и миддлвара
