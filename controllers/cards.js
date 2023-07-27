@@ -27,7 +27,7 @@ module.exports.createCard = (req, res, next) => {
 
 // удаление карточки
 module.exports.deleteCardById = (req, res, next) => {
-  Card.findById(req.params.cardId)
+  Card.findByIdAndRemove(req.params.cardId)
     .orFail()
     .then((card) => {
       if (card.owner !== req.user._id) {
