@@ -25,3 +25,5 @@ router.use('/cards', auth, cardRoute);
 router.use('*', (req, res, next) => {
   next(new NotFoundError('Такая страница не найдена'));
 });
+
+module.exports = router;

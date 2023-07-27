@@ -4,9 +4,9 @@ const helmet = require('helmet');
 
 const { errors } = require('celebrate');
 
-const centralError = require('./middlewares/centralError');
+const route = require('./routes/route');
 
-const route = require('./routes/index');
+const centralError = require('./middlewares/centralError');
 
 const { PORT = 3000 } = process.env;
 
