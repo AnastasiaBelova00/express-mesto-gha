@@ -28,7 +28,6 @@ module.exports.createCard = (req, res, next) => {
 // удаление карточки
 module.exports.deleteCardById = (req, res, next) => {
   Card.findById(req.params.cardId)
-    .orFail()
     .then((card) => {
       if (!card) {
         return next(new NotFoundError('Такой карточки не существует'));
