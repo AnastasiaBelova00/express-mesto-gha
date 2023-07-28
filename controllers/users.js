@@ -5,7 +5,6 @@ const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
 
 // список всех пользователей
 module.exports.getAllUsers = (req, res, next) => {
@@ -119,7 +118,6 @@ module.exports.login = (req, res, next) => {
 
       // вернём токен
       res.status(200).send({ _id: token });
-      throw new UnauthorizedError('Неверная почта и/или пароль');
     })
     .catch(next);
 };
@@ -132,9 +130,6 @@ module.exports.getCurrentUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         return next(new NotFoundError('Такого пользователя не существует'));
-      }
-      if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Переданы невалидные данные'));
       }
       return next(err);
     });
